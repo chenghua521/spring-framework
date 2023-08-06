@@ -940,8 +940,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		// 先看有没有注册
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
-		if (existingDefinition != null) {  // 如果注册了
-			if (!isAllowBeanDefinitionOverriding()) {  // 看能不能覆盖
+		// 如果注册了
+		if (existingDefinition != null) {
+			// 看能不能覆盖
+			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
 			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
@@ -966,7 +968,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
-			this.beanDefinitionMap.put(beanName, beanDefinition); // 最后如果可以覆盖 就覆盖掉原来的beanDefinition
+			// 最后如果可以覆盖 就覆盖掉原来的beanDefinition
+			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
 			if (hasBeanCreationStarted()) {

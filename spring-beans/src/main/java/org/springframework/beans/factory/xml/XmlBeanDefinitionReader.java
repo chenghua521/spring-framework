@@ -307,7 +307,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
-		return loadBeanDefinitions(new EncodedResource(resource)); // 按照指定的编码读取配置文件
+		// 按照指定的编码读取配置文件
+		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
 	/**
@@ -333,9 +334,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
 			InputSource inputSource = new InputSource(inputStream);
 			if (encodedResource.getEncoding() != null) {
-				inputSource.setEncoding(encodedResource.getEncoding()); // 设置编码格式
+				// 设置编码格式
+				inputSource.setEncoding(encodedResource.getEncoding());
 			}
-			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());// 真正的读取xml文件 该方法是加载xml文件的核心方法
+			// 真正的读取xml文件 该方法是加载xml文件的核心方法
+			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		catch (IOException ex) {
 			throw new BeanDefinitionStoreException(
@@ -387,8 +390,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			Document doc = doLoadDocument(inputSource, resource);  // 读取xml文件的document对象 把xml格式的信息解析成对应的节点(Node) 根据文档的节点信息，封装成一个个的beanDefinition对象
-			int count = registerBeanDefinitions(doc, resource); // 把一个个的节点封装成一个个的beanDefinition对象
+			// 读取xml文件的document对象 把xml格式的信息解析成对应的节点(Node)
+			// 根据文档的节点信息，封装成一个个的beanDefinition对象
+			Document doc = doLoadDocument(inputSource, resource);
+			// 把一个个的节点封装成一个个的beanDefinition对象
+			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
 			}

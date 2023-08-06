@@ -56,7 +56,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 * @param parent the parent context
 	 */
 	public AbstractRefreshableConfigApplicationContext(@Nullable ApplicationContext parent) {
-		super(parent);
+		super(parent);  // 继续调用父类的构造方法
 	}
 
 
@@ -70,7 +70,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
-	 * Set the config locations for this application context.
+	 * Set the config locations for this application context. 为容器设置配置文件的路径
 	 * <p>If not set, the implementation may use a default as appropriate.
 	 */
 	public void setConfigLocations(@Nullable String... locations) {
@@ -78,7 +78,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 			Assert.noNullElements(locations, "Config locations must not be null");
 			this.configLocations = new String[locations.length];
 			for (int i = 0; i < locations.length; i++) {
-				this.configLocations[i] = resolvePath(locations[i]).trim();
+				this.configLocations[i] = resolvePath(locations[i]).trim(); // 对配置文件的路径进行一些处理 解析指定路径
 			}
 		}
 		else {
@@ -115,14 +115,14 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
-	 * Resolve the given path, replacing placeholders with corresponding
+	 * Resolve the given path, replacing placeholders with corresponding  解析给定路径，用相应的占位符替换
 	 * environment property values if necessary. Applied to config locations.
 	 * @param path the original file path
 	 * @return the resolved file path
 	 * @see org.springframework.core.env.Environment#resolveRequiredPlaceholders(String)
 	 */
 	protected String resolvePath(String path) {
-		return getEnvironment().resolveRequiredPlaceholders(path);
+		return getEnvironment().resolveRequiredPlaceholders(path); // getEnvironment获取环境信息  resolveRequiredPlaceholders：把一些占位符进行替换
 	}
 
 

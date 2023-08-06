@@ -44,7 +44,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
  */
 public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
-
+	// 设置xml文件的验证标志，默认是true dtd xsd schema等
 	private boolean validating = true;
 
 
@@ -59,7 +59,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @param parent the parent context
 	 */
 	public AbstractXmlApplicationContext(@Nullable ApplicationContext parent) {
-		super(parent);
+		super(parent); // 继续调用父类的构造方法
 	}
 
 
@@ -79,14 +79,14 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 */
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
-		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
+		// Create a new XmlBeanDefinitionReader for the given BeanFactory. 适配器模式 这里创建一个读取xml文件读取器
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
-		beanDefinitionReader.setEnvironment(this.getEnvironment());
-		beanDefinitionReader.setResourceLoader(this);
-		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
+		beanDefinitionReader.setEnvironment(this.getEnvironment()); // 读取之前设置环境变量
+		beanDefinitionReader.setResourceLoader(this); // 设置一个资源加载器
+		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));  // 读取xml文件需要有解析xml文件的规范，比如dtd xsd等，这里设置一个本地的解析xml文件的规范文件的位置  用于解析xml文件
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.

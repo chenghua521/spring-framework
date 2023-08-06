@@ -154,7 +154,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	static {
-		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
+		// 立即加载 ContextClosedEvent 类以避免奇怪的类加载器问题
 		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
 		ContextClosedEvent.class.getName();
 	}
@@ -163,7 +163,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** Logger used by this class. Available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Unique id for this context, if any. */
+	/** Unique id for this context, if any.  容器的唯一id值*/
 	private String id = ObjectUtils.identityToString(this);
 
 	/** Display name. */
@@ -183,13 +183,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** System time in milliseconds when this context started. */
 	private long startupDate;
 
-	/** Flag that indicates whether this context is currently active. */
+	/** Flag that indicates whether this context is currently active. 标记容器是否是激活状态 */
 	private final AtomicBoolean active = new AtomicBoolean();
 
-	/** Flag that indicates whether this context has been closed already. */
+	/** Flag that indicates whether this context has been closed already. 标记容器是否是关闭状态*/
 	private final AtomicBoolean closed = new AtomicBoolean();
 
-	/** Synchronization monitor for the "refresh" and "destroy". */
+	/** Synchronization monitor for the "refresh" and "destroy". 容器刷新和销毁的时候会加锁*/
 	private final Object startupShutdownMonitor = new Object();
 
 	/** Reference to the JVM shutdown hook, if registered. */
@@ -214,19 +214,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** Statically specified listeners. */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
-	/** Local listeners registered before refresh. */
+	/** Local listeners registered before refresh. 刷新前注册的本地监听器*/
 	@Nullable
 	private Set<ApplicationListener<?>> earlyApplicationListeners;
 
-	/** ApplicationEvents published before the multicaster setup. */
+	/** ApplicationEvents published before the multicaster setup. 在多播器设置之前发布的应用程序事件*/
 	@Nullable
 	private Set<ApplicationEvent> earlyApplicationEvents;
 
 
 	/**
+	 * 创建一个无父类的AbstractApplicationContext对象
 	 * Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
+		// 创建资源模式处理器  主要用来解析系统运行的时候所需要的一些资源 比如配置文件
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
@@ -235,8 +237,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @param parent the parent context
 	 */
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
-		this();
-		setParent(parent);
+		this();  //调用AbstractApplicationContext的无参构造方法
+		setParent(parent); // parent为null
 	}
 
 
@@ -327,7 +329,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * a custom {@link ConfigurableEnvironment} implementation.
 	 */
 	protected ConfigurableEnvironment createEnvironment() {
-		return new StandardEnvironment();
+		return new StandardEnvironment();  // 创建一个标准的环境对象，主要是读取系统环境信息
 	}
 
 	/**
@@ -456,6 +458,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
 	protected ResourcePatternResolver getResourcePatternResolver() {
+		// 创建一个资源模式解析器 其实就是用来解析xml文件 PathMatchingResourcePatternResolver 实现了ResourceLoader接口用来加载资源文件
 		return new PathMatchingResourcePatternResolver(this);
 	}
 
@@ -516,10 +519,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			// Prepare this context for refreshing.
+			// Prepare this context for refreshing. 在容器刷新之前做一些准备工作
+			// 准备监听器和事件的集合对象，默认为空
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			// 创建容器对象工厂：DefaultListableBeanFactory
+			// 加载xml配置文件的属性到当前工厂中，
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -527,30 +533,57 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+
+
+
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
+
+
+
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
+
+
+
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
+
+
+
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+
+
+
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+
+
+
 				onRefresh();
 
 				// Check for listener beans and register them.
+
+
+
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+
+
+
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+
+
+
 				finishRefresh();
 			}
 
@@ -583,10 +616,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * active flag as well as performing any initialization of property sources.
 	 */
 	protected void prepareRefresh() {
-		// Switch to active.
+		// Switch to active.  设置容器启动时间
 		this.startupDate = System.currentTimeMillis();
-		this.closed.set(false);
-		this.active.set(true);
+		this.closed.set(false); // 容器关闭标志位
+		this.active.set(true);  // 容器处于活跃状态
 
 		if (logger.isDebugEnabled()) {
 			if (logger.isTraceEnabled()) {
@@ -597,16 +630,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
-		// Initialize any placeholder property sources in the context environment.
-		initPropertySources();
+		// Initialize any placeholder property sources in the context environment. 初始化上下文环境中的任何占位符属性
+		initPropertySources(); // 该方法默认实现为空，可以自定义一些子类实现这个方法，进行一些拓展工作
 
-		// Validate that all properties marked as required are resolvable:
+		// Validate that all properties marked as required are resolvable: 验证需要的属性是否都已经准备好
 		// see ConfigurablePropertyResolver#setRequiredProperties
 		getEnvironment().validateRequiredProperties();
 
-		// Store pre-refresh ApplicationListeners...
+		// Store pre-refresh ApplicationListeners... 判断刷新前的应用监听器集合是否为空，如果为空则将监听器添加到集合中
 		if (this.earlyApplicationListeners == null) {
-			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
+			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners); // 在SpringBoot中这些监听器不会为空
 		}
 		else {
 			// Reset local application listeners to pre-refresh state.

@@ -133,7 +133,7 @@ public class PropertyPlaceholderHelper {
 		if (startIndex == -1) {
 			return value;
 		}
-
+		// 当xml文件中含有${}时，把占位符替换为真正的值
 		StringBuilder result = new StringBuilder(value);
 		while (startIndex != -1) {
 			int endIndex = findPlaceholderEndIndex(result, startIndex);

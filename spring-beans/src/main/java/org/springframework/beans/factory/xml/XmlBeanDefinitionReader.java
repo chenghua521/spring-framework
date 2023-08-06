@@ -307,7 +307,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
-		return loadBeanDefinitions(new EncodedResource(resource));
+		return loadBeanDefinitions(new EncodedResource(resource)); // 按照指定的编码读取配置文件
 	}
 
 	/**
@@ -322,20 +322,20 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Loading XML bean definitions from " + encodedResource);
 		}
-
+		// 记录已经加载的资源
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 
 		if (!currentResources.add(encodedResource)) {
 			throw new BeanDefinitionStoreException(
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
-
+		// 从encodedResource中获取Resource对象，然后获取Resource对象的inputStream
 		try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
 			InputSource inputSource = new InputSource(inputStream);
 			if (encodedResource.getEncoding() != null) {
-				inputSource.setEncoding(encodedResource.getEncoding());
+				inputSource.setEncoding(encodedResource.getEncoding()); // 设置编码格式
 			}
-			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
+			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());// 真正的读取xml文件 该方法是加载xml文件的核心方法
 		}
 		catch (IOException ex) {
 			throw new BeanDefinitionStoreException(
@@ -387,8 +387,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			Document doc = doLoadDocument(inputSource, resource);
-			int count = registerBeanDefinitions(doc, resource);
+			Document doc = doLoadDocument(inputSource, resource);  // 读取xml文件的document对象 把xml格式的信息解析成对应的节点(Node) 根据文档的节点信息，封装成一个个的beanDefinition对象
+			int count = registerBeanDefinitions(doc, resource); // 把一个个的节点封装成一个个的beanDefinition对象
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
 			}

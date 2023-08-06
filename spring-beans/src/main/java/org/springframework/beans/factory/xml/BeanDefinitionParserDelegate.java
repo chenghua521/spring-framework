@@ -412,17 +412,21 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		String id = ele.getAttribute(ID_ATTRIBUTE);  // 解析bean标签的id
-		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE); // 解析bean标签的name
+		// 解析bean标签的id
+		String id = ele.getAttribute(ID_ATTRIBUTE);
+		// 解析bean标签的name
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
 		List<String> aliases = new ArrayList<>();
-		if (StringUtils.hasLength(nameAttr)) {  // 名字可以有多个 分割后分别处理（放在aliases集合中）
+		if (StringUtils.hasLength(nameAttr)) {
+			// 名字可以有多个 分割后分别处理（放在aliases集合中）
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
 		String beanName = id;
-		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {  // id不能为空！
+		// id不能为空！
+		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No XML 'id' specified - using '" + beanName +
@@ -503,27 +507,33 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {  // 解析class属性
+		// 解析class属性
+		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
-		String parent = null;       // 解析parent属性
+		// 解析parent属性
+		String parent = null;
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
-		try {// 创建装载bean信息的AbstractBeanDefinition对象，实际实现的是GenericBeanDefinition
+		try {
+			// 创建装载bean信息的AbstractBeanDefinition对象，实际实现的是GenericBeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 			// bd中记录了class信息，下面就是根据xml定义填充其他信息
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT)); // 解析bean标签中的description标签信息
-
-			parseMetaElements(ele, bd);  // 解析meta标签
+			// 解析bean标签中的description标签信息
+			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
+			// 解析meta标签
+			parseMetaElements(ele, bd);
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-
-			parseConstructorArgElements(ele, bd); // 解析构造函数标签
-			parsePropertyElements(ele, bd);  // 解析property标签
-			parseQualifierElements(ele, bd);  // 解析qualifier标签
+			//// 解析构造函数标签
+			parseConstructorArgElements(ele, bd);
+			// 解析property标签
+			parsePropertyElements(ele, bd);
+			// 解析qualifier标签
+			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
@@ -1025,19 +1035,24 @@ public class BeanDefinitionParserDelegate {
 			nullHolder.setSource(extractSource(ele));
 			return nullHolder;
 		}
-		else if (nodeNameEquals(ele, ARRAY_ELEMENT)) {  // 解析array
+		// 解析array
+		else if (nodeNameEquals(ele, ARRAY_ELEMENT)) {
 			return parseArrayElement(ele, bd);
 		}
-		else if (nodeNameEquals(ele, LIST_ELEMENT)) {  // 解析list
+		// 解析list
+		else if (nodeNameEquals(ele, LIST_ELEMENT)) {
 			return parseListElement(ele, bd);
 		}
-		else if (nodeNameEquals(ele, SET_ELEMENT)) {  // 解析set
+		// 解析set
+		else if (nodeNameEquals(ele, SET_ELEMENT)) {
 			return parseSetElement(ele, bd);
 		}
-		else if (nodeNameEquals(ele, MAP_ELEMENT)) {  // 解析map
+		// 解析map
+		else if (nodeNameEquals(ele, MAP_ELEMENT)) {
 			return parseMapElement(ele, bd);
 		}
-		else if (nodeNameEquals(ele, PROPS_ELEMENT)) { // 解析props
+		// 解析props
+		else if (nodeNameEquals(ele, PROPS_ELEMENT)) {
 			return parsePropsElement(ele);
 		}
 		else {

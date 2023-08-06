@@ -59,7 +59,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @param parent the parent context
 	 */
 	public AbstractXmlApplicationContext(@Nullable ApplicationContext parent) {
-		super(parent); // 继续调用父类的构造方法
+		// 继续调用父类的构造方法
+		super(parent);
 	}
 
 
@@ -84,14 +85,18 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
-		beanDefinitionReader.setEnvironment(this.getEnvironment()); // 读取之前设置环境变量
-		beanDefinitionReader.setResourceLoader(this); // 设置一个资源加载器
-		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));  // 读取xml文件需要有解析xml文件的规范，比如dtd xsd等，这里设置一个本地的解析xml文件的规范文件的位置  用于解析xml文件
+		// 读取之前设置环境变量
+		beanDefinitionReader.setEnvironment(this.getEnvironment());
+		// 设置一个资源加载器
+		beanDefinitionReader.setResourceLoader(this);
+		// 读取xml文件需要有解析xml文件的规范，比如dtd xsd等，这里设置一个本地的解析xml文件的规范文件的位置  用于解析xml文件
+		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		initBeanDefinitionReader(beanDefinitionReader);
-		loadBeanDefinitions(beanDefinitionReader);  // 开始完成beanDefinition的加载
+		// 开始完成beanDefinition的加载
+		loadBeanDefinitions(beanDefinitionReader);
 	}
 
 	/**
@@ -119,13 +124,16 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see #getResourcePatternResolver
 	 */
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
-		Resource[] configResources = getConfigResources(); // 以Resources的方式获取配置文件的资源位置
+		// 以Resources的方式获取配置文件的资源位置
+		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}
-		String[] configLocations = getConfigLocations();  // 以String的方式获取配置文件的资源位置
+		// 以String的方式获取配置文件的资源位置
+		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
-			reader.loadBeanDefinitions(configLocations); // 有了位置就可以加载xml文件的信息了
+			// 有了位置就可以加载xml文件的信息了
+			reader.loadBeanDefinitions(configLocations);
 		}
 	}
 

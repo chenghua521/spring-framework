@@ -86,7 +86,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @param parent the parent context
 	 */
 	public AbstractRefreshableApplicationContext(@Nullable ApplicationContext parent) {
-		super(parent);   // 继续调用父类的构造方法
+		// 继续调用父类的构造方法
+		super(parent);
 	}
 
 
@@ -124,10 +125,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			DefaultListableBeanFactory beanFactory = createBeanFactory();// 创建一个DefaultListableBeanFactory对象
+			// 创建一个DefaultListableBeanFactory对象
+			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
-			loadBeanDefinitions(beanFactory); // 加载BeanDefinitions到beanFactory
+			// 加载BeanDefinitions到beanFactory
+			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {

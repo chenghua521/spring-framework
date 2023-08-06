@@ -237,8 +237,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @param parent the parent context
 	 */
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
-		this();  //调用AbstractApplicationContext的无参构造方法
-		setParent(parent); // parent为null
+		//调用AbstractApplicationContext的无参构造方法
+		this();
+		// parent为null
+		setParent(parent);
 	}
 
 
@@ -329,7 +331,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * a custom {@link ConfigurableEnvironment} implementation.
 	 */
 	protected ConfigurableEnvironment createEnvironment() {
-		return new StandardEnvironment();  // 创建一个标准的环境对象，主要是读取系统环境信息
+		// 创建一个标准的环境对象，主要是读取系统环境信息
+		return new StandardEnvironment();
 	}
 
 	/**
@@ -616,10 +619,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * active flag as well as performing any initialization of property sources.
 	 */
 	protected void prepareRefresh() {
-		// Switch to active.  设置容器启动时间
+		// Switch to active.
+		// 设置容器启动时间
 		this.startupDate = System.currentTimeMillis();
-		this.closed.set(false); // 容器关闭标志位
-		this.active.set(true);  // 容器处于活跃状态
+		// 容器关闭标志位
+		this.closed.set(false);
+		// 容器处于活跃状态
+		this.active.set(true);
 
 		if (logger.isDebugEnabled()) {
 			if (logger.isTraceEnabled()) {
@@ -630,8 +636,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
-		// Initialize any placeholder property sources in the context environment. 初始化上下文环境中的任何占位符属性
-		initPropertySources(); // 该方法默认实现为空，可以自定义一些子类实现这个方法，进行一些拓展工作
+		// Initialize any placeholder property sources in the context environment.
+		// 初始化上下文环境中的任何占位符属性
+		// 该方法默认实现为空，可以自定义一些子类实现这个方法，进行一些拓展工作
+		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable: 验证需要的属性是否都已经准备好
 		// see ConfigurablePropertyResolver#setRequiredProperties
@@ -639,7 +647,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Store pre-refresh ApplicationListeners... 判断刷新前的应用监听器集合是否为空，如果为空则将监听器添加到集合中
 		if (this.earlyApplicationListeners == null) {
-			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners); // 在SpringBoot中这些监听器不会为空
+			// 在SpringBoot中这些监听器不会为空
+			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
 		}
 		else {
 			// Reset local application listeners to pre-refresh state.

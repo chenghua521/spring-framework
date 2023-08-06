@@ -207,7 +207,8 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		if (this.strictHelper == null) {
 			this.strictHelper = createPlaceholderHelper(false);
 		}
-		return doResolvePlaceholders(text, this.strictHelper);  // 创建PlaceholderHelper之后真正的进行替换工作
+		// 创建PlaceholderHelper之后真正的进行替换工作
+		return doResolvePlaceholders(text, this.strictHelper);
 	}
 
 	/**
@@ -232,7 +233,8 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 
 	private PropertyPlaceholderHelper createPlaceholderHelper(boolean ignoreUnresolvablePlaceholders) {
 		return new PropertyPlaceholderHelper(this.placeholderPrefix, this.placeholderSuffix,
-				this.valueSeparator, ignoreUnresolvablePlaceholders);  // 创建一个可以提供前缀和后缀的对象
+				// 创建一个可以提供前缀和后缀的对象
+				this.valueSeparator, ignoreUnresolvablePlaceholders);
 	}
 
 	private String doResolvePlaceholders(String text, PropertyPlaceholderHelper helper) {

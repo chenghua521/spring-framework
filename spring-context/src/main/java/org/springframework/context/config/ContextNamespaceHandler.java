@@ -32,6 +32,7 @@ public class ContextNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override
 	public void init() {
+		// 创建标签对应的解析类，并把这个类放到一个map中
 		registerBeanDefinitionParser("property-placeholder", new PropertyPlaceholderBeanDefinitionParser());
 		registerBeanDefinitionParser("property-override", new PropertyOverrideBeanDefinitionParser());
 		registerBeanDefinitionParser("annotation-config", new AnnotationConfigBeanDefinitionParser());

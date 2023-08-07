@@ -57,11 +57,12 @@ class PropertyPlaceholderBeanDefinitionParser extends AbstractPropertyLoadingBea
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		// 调用父类 设置一些通用的属性值
 		super.doParse(element, parserContext, builder);
 
 		builder.addPropertyValue("ignoreUnresolvablePlaceholders",
 				Boolean.valueOf(element.getAttribute("ignore-unresolvable")));
-
+		// 设置子类属性 即placeHold标签自己独有的属性
 		String systemPropertiesModeName = element.getAttribute(SYSTEM_PROPERTIES_MODE_ATTRIBUTE);
 		if (StringUtils.hasLength(systemPropertiesModeName) &&
 				!systemPropertiesModeName.equals(SYSTEM_PROPERTIES_MODE_DEFAULT)) {

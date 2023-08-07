@@ -8,4 +8,9 @@
 		<property name="id" value="001"/>
 		<property name="name" value="huage"/>
 	</bean>
+
+	<bean class="com.cheng.bean.People" id="people">
+		<property name="name" value="Tom"/>
+		<property name="age" value="18"/>
+	</bean>
 </beans>

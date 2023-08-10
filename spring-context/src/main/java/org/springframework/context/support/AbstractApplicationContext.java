@@ -753,18 +753,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
-		//添加一个类加载器，这个类加载器的用处在那里呢？spring扫描类的时候是通过ASM字节码技术扫描的，这个时候这个class是没有被加载的
-		//只是在硬盘上的一个class文件而已，扫描到过后是放入了BeanDefinition的beanclass属性中，只是一个类的全限定名，
-		//这里设置类加载器的意思就是后面初始化bean的时候会将这个beanclass的全限定名拿出来然后加载到jvm，这个时候就需要一个类加载器
-		//所以这里设置一个了加载器
+		/**
+		 * 添加一个类加载器，这个类加载器的用处在那里呢？spring扫描类的时候是通过ASM字节码技术扫描的，这个时候这个class是没有被加载的
+		 * 只是在硬盘上的一个class文件而已，扫描到过后是放入了BeanDefinition的beanClass属性中，只是一个类的全限定名，
+		 * 这里设置类加载器的意思就是后面初始化bean的时候会将这个beanClass的全限定名拿出来然后加载到jvm，这个时候就需要一个类加载器
+		 * 所以这里设置一个了加载器
+		 */
 		beanFactory.setBeanClassLoader(getClassLoader());
 
-		//添加一个处理el表达式的解析器，比如我们的@Value()中就有可能是表达式，需要解析$和#,$是一个上下文参数的占位符
-		//而#是el表达式
+		//添加一个处理el表达式的解析器，比如我们的@Value()中就有可能是表达式，需要解析$和#,$是一个上下文参数的占位符  而#是el表达式
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 
-		//注册一些类型的转换器，比如我们在类中定义了
 		/**
+		 * 注册一些类型的转换器，比如我们在类中定义了
 		 * @Value("c://xxx/tt.file")
 		 * private File file;
 		 * 那么这里设置的类型转换器就是讲@Value中的字符串直接生成一个File，还有类似于Integer  xxx一样的意思
@@ -790,7 +791,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
 		/**
-		 * ignoreDependencyInterface方法作用：
+		 * void ignoreDependencyInterface(Class<?> ifc);方法作用：
 		 * 如果某个bean是Class<?> ifc的子类，则该spring bean的所有的属性将不会被自动注入。
 		 *
 		 * spring中提供了各种xxxAware，如BeanNameAware，BeanClassLoaderAware，BeanFacotryAware等，

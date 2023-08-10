@@ -547,38 +547,111 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Spring的一个扩展点. 如果有Bean实现了BeanFactoryPostProcessor接口，
 				// 那么在容器初始化以后，Spring 会负责调用里面的 postProcessBeanFactory 方法。
 				// 具体的子类可以在这步的时候添加特殊的 BeanFactoryPostProcessor 的实现类，来做些事
+				/**
+				 * 4.Bean定义加载完毕之后实现，目前方法为空实现，留给开发人员进行自定义扩展。
+				 * 	  和BeanFactoryPostProcessor中的方法postProcessBeanFactory相同
+				 *
+				 * 该方法在Bean定义加载完毕之后，Bean实例化之前会执行
+				 * 比如在BeanFactory加载完所有的Bean定义之后，想要修改某个bean的定义信息，可以通过重写这个方法实现.
+				 * 比如：在xml中配置了<bean id="user"><property name="name" value="wb"></property></bean>
+				 * 如果想在不修改配置文件的情况下修改name的值，可以使用如下的方法：
+				 * class MyApplicationContext extends ClassPathXmlApplicationContext{
+				 * 		public MyApplicationContext(String s){
+				 * 			super(s);
+				 * 		}
+				 *
+				 * 		@Override
+				 * 		protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+				 * 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition("user");
+				 * 			PropertyValue propertyValue=new PropertyValue("name", "www.so.com");
+				 * 			beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+				 * 		}
+				 * 	}
+				 */
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
 				// 调用BeanFactoryPostProcessor各个实现类的postProcessBeanFactory(factory) 方法
+				/**
+				 * 5.执行beanFactory的后置处理器
+				 *
+				 * 先执行BeanDefinitionRegistryPostProcessor接口的实现类的postProcessBeanDefinitionRegistry方法，
+				 *   执行过程中，也是先执行实现了优先级接口PriorityOrdered的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry方法
+				 *   然后执行实现了Ordered接口的...
+				 *   最后执行未实现PriorityOrdered接口和Ordered接口的...
+				 *
+				 * 然后执行BeanFactoryPostProcessor接口的实现类的postProcessBeanFactory方法
+				 *   执行过程中，也是先执行实现了优先级接口PriorityOrdered的BeanFactoryPostProcessor的postProcessBeanFactory方法
+				 *   然后执行实现了Ordered接口的...
+				 *   最后执行未实现PriorityOrdered接口和Ordered接口的...
+				 *
+				 *   其中也涉及到了排序过程
+				 *  配置类中的Selector类型的组件和@Component,@ComponentScan中的元数据信息也会在该步骤中进行解析
+				 *    还包括执行条件注解@Condition的回调逻辑
+				 *  ImportBeanDefinitionRegistrar对应的registerBeanDefinitions方法也会在该步骤中调用，给容器中注册自定义的组件.
+				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
 				// 扩展点,注册 BeanPostProcessor 的实现类，注意不是BeanFactoryPostProcessor
+				/**
+				 * 6.注册所有bean的后置处理器.用来拦截Bean的创建
+				 *
+				 * 注册所有实现了BeanPostProcessor接口的后置处理器
+				 *   执行过程中，也是先执行实现了优先级接口PriorityOrdered接口的BeanPostProcessor的addBeanPostProcessor方法
+				 *   然后执行实现了Ordered接口的...
+				 *   最后执行未实现PriorityOrdered接口和Ordered接口的...
+				 *
+				 *   其中也涉及到了排序过程
+				 */
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
 				// 初始化当前 ApplicationContext 的 MessageSource，用在国际化操作中
+				/**
+				 * 7.初始化消息源
+				 * 用来做国际化，消息绑定，消息解析等功能
+				 * 一般在SpringMVC中会使用到.
+				 */
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
 				// 这个方法主要为初始化当前 ApplicationContext 的事件广播器
+				/**
+				 * 8.初始化事件派发器，用来发布事件
+				 * 	如果容器中有类型为ApplicationEventMulticaster的派发器组件，则直接获取使用
+				 * 	如果容器中没有，则默认创建一个类型为SimpleApplicationEventMulticaster的派发器，供容器派发事件使用
+				 */
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
 				// 这也是spring的一个扩展点
+				/**
+				 * 9.用来初始化一些特殊的Bean，目前默认是空方法，未实现，可以通过继承AbstractApplicationContext类，
+				 *   然后覆写该方法进行自定义特殊bean的初始化.
+				 *
+				 * 比如：AbstractRefreshableWebApplicationContext中onRefresh方法用来初始化主题能力.
+				 *
+				 * SpringBoot也是在改步骤中启动内嵌Tomcat容器的
+				 */
 				onRefresh();
 
 				// Check for listener beans and register them.
 				// 注册事件监听器
+				/**
+				 * 10.注册监听器
+				 * 将监听器绑定到广播器上，将监听器对应的beanName绑定到到第8步初始化的事件派发器中，
+				 *   如果之前有发布的事件，则直接通过事件派发器将事件派发出去.
+				 */
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				// 初始化所有的 singleton beans
+				//实例化、填充属性、前置通知、初始化bean、后置通知(IOC的核心)
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
-				// 完成启动
+				// 完成启动 /** 12.发布事件。例如容器中的刷新事件:ContextRefreshedEvent就是在这一步中发布. SpringCloud在该步骤中会启动web服务 */
 				finishRefresh();
 			}
 

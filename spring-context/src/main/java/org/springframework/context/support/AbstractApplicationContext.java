@@ -789,7 +789,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		 */
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-
+		/**
+		 * ignoreDependencyInterface方法作用：
+		 * 如果某个bean是Class<?> ifc的子类，则该spring bean的所有的属性将不会被自动注入。
+		 *
+		 * spring中提供了各种xxxAware，如BeanNameAware，BeanClassLoaderAware，BeanFacotryAware等，
+		 * Aware的作用就是在创建bean的过程中通过对应的setXxx方法设置对应的属性值，注意这里的属性是通过setXxx方法设置，
+		 * 而不是自动注入了。因此一般xxxAware会被作为参数调用ignoreDependencyInterface方法。
+		 *
+		 */
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);

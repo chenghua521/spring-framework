@@ -573,22 +573,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Invoke factory processors registered as beans in the context.
 				// 调用BeanFactoryPostProcessor各个实现类的postProcessBeanFactory(factory) 方法
 				/**
-				 * 5.执行beanFactory的后置处理器
+				 * 整个 invokeBeanFactoryPostProcessors 方法围绕两个接口，BeanDefinitionRegistryPostProcessor 和 BeanFactoryPostProcessor，
+				 * 其中 BeanDefinitionRegistryPostProcessor 继承了 BeanFactoryPostProcessor 。
+				 * BeanDefinitionRegistryPostProcessor 主要用来在常规 BeanFactoryPostProcessor 检测开始之前注册其他 Bean 定义，
+				 * 说的简单点，就是 BeanDefinitionRegistryPostProcessor 具有更高的优先级，执行顺序在 BeanFactoryPostProcessor 之前
 				 *
-				 * 先执行BeanDefinitionRegistryPostProcessor接口的实现类的postProcessBeanDefinitionRegistry方法，
-				 *   执行过程中，也是先执行实现了优先级接口PriorityOrdered的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry方法
-				 *   然后执行实现了Ordered接口的...
-				 *   最后执行未实现PriorityOrdered接口和Ordered接口的...
-				 *
-				 * 然后执行BeanFactoryPostProcessor接口的实现类的postProcessBeanFactory方法
-				 *   执行过程中，也是先执行实现了优先级接口PriorityOrdered的BeanFactoryPostProcessor的postProcessBeanFactory方法
-				 *   然后执行实现了Ordered接口的...
-				 *   最后执行未实现PriorityOrdered接口和Ordered接口的...
-				 *
-				 *   其中也涉及到了排序过程
-				 *  配置类中的Selector类型的组件和@Component,@ComponentScan中的元数据信息也会在该步骤中进行解析
-				 *    还包括执行条件注解@Condition的回调逻辑
-				 *  ImportBeanDefinitionRegistrar对应的registerBeanDefinitions方法也会在该步骤中调用，给容器中注册自定义的组件.
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -859,6 +848,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 1.getBeanFactoryPostProcessors(): 拿到当前应用上下文beanFactoryPostProcessors变量中的值
+		// 2.invokeBeanFactoryPostProcessors: 实例化并调用所有已注册的BeanFactoryPostProcessor
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

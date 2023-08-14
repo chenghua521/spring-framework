@@ -280,7 +280,7 @@ public abstract class ClassUtils {
 		if (clToUse == null) {
 			clToUse = getDefaultClassLoader();
 		}
-		try {
+		try { // 使用反射创建bean实例
 			return Class.forName(name, false, clToUse);
 		}
 		catch (ClassNotFoundException ex) {

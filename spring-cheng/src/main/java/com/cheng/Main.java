@@ -8,8 +8,8 @@ public class Main {
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		User user = context.getBean("user", User.class);
-		People people = context.getBean("people", People.class);
-		System.out.println(people);
+		//People people = context.getBean("people", People.class);
+		//System.out.println(people);
 		user.hello();
 	}
 }

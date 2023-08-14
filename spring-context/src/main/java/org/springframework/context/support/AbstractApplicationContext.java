@@ -640,7 +640,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
-				// 完成启动 /** 12.发布事件。例如容器中的刷新事件:ContextRefreshedEvent就是在这一步中发布. SpringCloud在该步骤中会启动web服务 */
+				// 完成启动 发布事件。例如容器中的刷新事件:ContextRefreshedEvent就是在这一步中发布. SpringCloud在该步骤中会启动web服务 */
 				finishRefresh();
 			}
 

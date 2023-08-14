@@ -7,7 +7,6 @@
 	   http://www.springframework.org/schema/context
 	   https://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
 
 	<!--默认使用无参构造实例化对象-->
 	<bean class="com.cheng.bean.User" id="user">
@@ -16,9 +15,14 @@
 	</bean>
 
 	<bean class="com.cheng.bean.People" id="people">
-		<property name="name" value="Tom"/>
+		<property name="name" value="张三"/>
 		<property name="age" value="18"/>
 	</bean>
+
+	<!--<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>-->
+	<bean class="com.cheng.util.MyBeanPostProcessor" id="myBeanPostProcessor"/>
+	<!--<bean class="com.cheng.util.MyInstantiationAwareBeanPostProcessor" id="myInstantiationAwareBeanPostProcessor"/>-->
+
 
 
 </beans>

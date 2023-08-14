@@ -10,6 +10,7 @@ public class User {
 	}
 
 	public User() {
+		System.out.println("创建bean实例！！");
 	}
 
 	public void setId(String id) {
@@ -22,5 +23,10 @@ public class User {
 
 	public void hello(){
 		System.out.println("hello " + name + "!");
+	}
+
+	@Override
+	public String toString() {
+		return "User{" + "id='" + id + '\'' + ", name='" + name + '\'' + '}';
 	}
 }

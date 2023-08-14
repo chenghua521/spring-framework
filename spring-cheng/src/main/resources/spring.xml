@@ -20,7 +20,7 @@
 	</bean>
 
 	<!--<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>-->
-	<bean class="com.cheng.util.MyBeanPostProcessor" id="myBeanPostProcessor"/>
+	<bean class="com.cheng.util.MyBeanPostProcessor"/>
 	<!--<bean class="com.cheng.util.MyInstantiationAwareBeanPostProcessor" id="myInstantiationAwareBeanPostProcessor"/>-->
 
 

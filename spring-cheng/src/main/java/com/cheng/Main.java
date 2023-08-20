@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		User user = context.getBean("user", User.class);
-		//People people = context.getBean("people", People.class);
+		//People people = context.getBean("people", People.class); 测试
 		//System.out.println(people);
 		user.hello();
 	}
